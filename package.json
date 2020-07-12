@@ -1,0 +1,16 @@
+{
+  "name": "hackfs-service",
+  "version": "1.0.0",
+  "description": "node-red service to monitor smart contracts",
+  "main": "index.js",
+  "scripts": {
+    "start": "node-red --userDir .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ethers": "^5.0.5",
+    "node-red-contrib-vt-event-listener": "^0.2.0"
+  }
+}
