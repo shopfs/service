@@ -1,8 +1,8 @@
 {
-  "name": "hackfs-service",
+  "name": "shopfs-service",
   "version": "1.0.0",
   "description": "node-red service to monitor smart contracts",
-  "main": "index.js",
+  "main": "settings.js",
   "scripts": {
     "start": "node-red --userDir .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "ethers": "^5.0.5",
-    "node-red-contrib-vt-event-listener": "^0.2.0"
+    "3box": "^1.20.3",
+    "identity-wallet": "^1.3.0",
+    "libp2p-pubsub": "^0.5.5",
+    "ethers": "^5.0.5"
   }
 }

@@ -61,7 +61,7 @@ module.exports = {
     //debugUseColors: true,
 
     // The file containing the flows. If not set, it defaults to flows_<hostname>.json
-    flowFile: 'flows.json',
+    flowFile: "flows.json",
 
     // To enabled pretty-printing of the flow within the flow file, set the following
     //  property to true:
@@ -195,7 +195,6 @@ module.exports = {
     //    next();
     //},
 
-
     // The following property can be used to add a custom middleware function
     // in front of all admin http routes. For example, to set custom http
     // headers
@@ -238,7 +237,9 @@ module.exports = {
     // can be accessed in a function block as:
     //    global.get("os")
     functionGlobalContext: {
-        ethers: require("ethers"),
+        Box: require("3box"),
+        IdentityWallet: require("identity-wallet"),
+        ethers: require("ethers")
         // os:require('os'),
         // jfive:require("johnny-five"),
         // j5board:require("johnny-five").Board({repl:false})
@@ -251,7 +252,6 @@ module.exports = {
     // By default, the property is set to false to avoid accidental exposure of
     // their values. Setting this to true will cause the keys to be listed.
     exportGlobalContextKeys: false,
-
 
     // Context Storage
     // The following property can be used to enable context storage. The configuration
@@ -297,4 +297,4 @@ module.exports = {
             enabled: false
         }
     }
-}
+};
