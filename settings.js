@@ -239,7 +239,9 @@ module.exports = {
     functionGlobalContext: {
         Box: require("3box"),
         IdentityWallet: require("identity-wallet"),
-        ethers: require("ethers")
+        ethers: require("ethers"),
+	firebase: require("firebase-admin"),
+	firebaseKeys: require("./firebase-keys.json")
         // os:require('os'),
         // jfive:require("johnny-five"),
         // j5board:require("johnny-five").Board({repl:false})
