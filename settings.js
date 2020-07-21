@@ -240,6 +240,7 @@ module.exports = {
         Box: require("3box"),
         IdentityWallet: require("identity-wallet"),
         ethers: require("ethers"),
+        Web3: require("web3"),
 	firebase: require("firebase-admin"),
 	firebaseKeys: require("./firebase-keys.json")
         // os:require('os'),
