@@ -1092,6 +1092,7 @@
         "once": true,
         "onceDelay": "0.3",
         "topic": "",
+        "payloadType": "str",
         "x": 280,
         "y": 300,
         "wires": [
@@ -1318,7 +1319,7 @@
         "type": "function",
         "z": "62c79142.684c1",
         "name": "read /files/:fileId",
-        "func": "const database = global.get(\"database\");\nconst web3 = global.get(\"web3\"); // Web3 library\nconst contract = global.get(\"contract\");\n \n \nconst fileId = msg.req.params.fileId;\nconst signature = msg.req.query.sign;\n\ntry {\nvar buyerReceivedAddress = await web3.eth.accounts.recover(fileId, signature);\n\nconsole.log({buyerReceivedAddress})\n\nconst isBuyer = await contract.isBuyer(fileId, buyerReceivedAddress);\n\nif (!isBuyer) {\n      msg.payload = {error: \"Unauthorized access\"}\n      msg.success = false\n      msg.errorCode = 401\n      return msg\n}\n\nconst snapshot = await database.ref(`/files/${fileId}`).once('value');\nif (!snapshot) {\n    msg.payload = { error: \"File does not exist\" }\n    msg.success = false\n    msg.errorCode = 404\n    return msg\n}\nmsg.payload = snapshot.val();\nmsg.success = true\nmsg.errorCode = 0\nreturn msg;\n} catch (err) {\n    msg.payload = { error : err }\n    msg.success = false\n    msg.errorCode = 500\n    return msg\n}",
+        "func": "const database = global.get(\"database\");\nconst web3 = global.get(\"web3\"); // Web3 library\nconst contract = global.get(\"contract\");\n \n \nconst fileId = msg.req.params.fileId;\nconst signature = msg.req.query.sign;\n\ntry {\nconst buyerReceivedAddress = await web3.eth.accounts.recover(fileId, signature);\nconst file = await contract.Files(parseInt(fileId));\nconst sellerAddress = file.seller;\n\nconst isBuyer = await contract.isBuyer(fileId, buyerReceivedAddress);\nconst isSubscriber = await contract.isSubscriber(sellerAddress, buyerReceivedAddress);\n\nif (!isBuyer && !isSubscriber) {\n      msg.payload = {error: \"Unauthorized access\"}\n      msg.errorCode = 401\n      return msg\n}\n\nconst snapshot = await database.ref(`/files/${fileId}`).once('value');\nif (!snapshot) {\n    msg.payload = { error: \"File does not exist\" }\n    msg.errorCode = 404\n    return msg\n}\nmsg.payload = snapshot.val();\nmsg.errorCode = 0\nreturn msg;\n} catch (err) {\n    msg.payload = { error : err }\n    msg.errorCode = 500\n    return msg\n}",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1472,7 +1473,7 @@
         "type": "function",
         "z": "f8d1a747.902e28",
         "name": "write /files/:fileId",
-        "func": "const database = global.get(\"database\");\nconst web3 = global.get(\"web3\"); // Web3 library\nconst contract = global.get(\"contract\");\n\nconst fileId = msg.req.params.fileId;\n \nconst threadData = msg.payload;\nconst signature = threadData.signature;\n\nvar sellerReceivedAddress = await web3.eth.accounts.recover(fileId, signature);\n\nconsole.log({sellerReceivedAddress})\n\nconst file = await contract.Files(parseInt(fileId));\nvar existingSellerAddress = file.seller;\n\n\nconsole.log({existingSellerAddress})\n\nif (sellerReceivedAddress !== existingSellerAddress ) {\n      msg.payload = {error: \"Unauthorized access\"}\n      // not removing it for now\n      msg.success = false\n      msg.errorCode = 401\n      return msg\n}\n\nawait database.ref(`/files/${fileId}`).set(threadData, function(error) {\n    msg.success = true\n    if (error) {\n        console.log(error)\n        msg.payload = {error}\n        msg.success = false\n        msg.errorCode = 500\n        return msg\n    }\n    msg.errorCode = 0\n    node.send(msg)\n});\n\n// return msg;",
+        "func": "const database = global.get(\"database\");\nconst web3 = global.get(\"web3\"); // Web3 library\nconst contract = global.get(\"contract\");\n\nconst fileId = msg.req.params.fileId;\n \nconst threadData = msg.payload;\nconst signature = threadData.signature;\n\nconst sellerReceivedAddress = await web3.eth.accounts.recover(fileId, signature);\n\nconst file = await contract.Files(parseInt(fileId));\nconst existingSellerAddress = file.seller;\n\n\nconsole.log({existingSellerAddress})\n\nif (sellerReceivedAddress !== existingSellerAddress ) {\n      msg.payload = {error: \"Unauthorized access\"}\n      msg.errorCode = 401\n      return msg\n}\n\nawait database.ref(`/files/${fileId}`).set(threadData, function(error) {\n    msg.success = true\n    if (error) {\n        console.log(error)\n        msg.payload = {error}\n        msg.errorCode = 500\n        return msg\n    }\n    msg.errorCode = 0\n    node.send(msg)\n});\n\n// return msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -1482,7 +1483,6 @@
         "wires": [
             [
                 "19c6a22a.208bde",
-                "961b1095.7e63f",
                 "e3d0875e.d844b8"
             ]
         ]
@@ -1642,23 +1642,6 @@
         "headers": {},
         "x": 920,
         "y": 460,
-        "wires": []
-    },
-    {
-        "id": "961b1095.7e63f",
-        "type": "debug",
-        "z": "f8d1a747.902e28",
-        "name": "",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "success",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 770,
-        "y": 360,
         "wires": []
     },
     {
